@@ -1,0 +1,27 @@
+
+[
+    {
+        "name": "Radio",
+        "category": "Electronics",
+        "price": 15.00,
+        "quantity": 1
+    },
+    {
+        "name" : "Pan",
+        "category": "Cooking",
+        "price": 10.00,
+        "quantity": 5
+    },
+    {
+        "name" : "Pot",
+        "category": "Garden",
+        "price": 8.00,
+        "quantity": 3
+    },
+    {
+        "name" : "Fan",
+        "category": "Electronics",
+        "price": 20.00,
+        "quantity": 10
+    }
+]
