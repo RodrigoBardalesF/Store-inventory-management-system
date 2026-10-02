@@ -18,4 +18,14 @@ const loadInventoryFromFile = async (filePath) => {
     };
 };
 
-export { saveInventoryToFile, loadInventoryFromFile };
+const resetInventoryFile = async (filePath, initialInventory) => {
+    try {
+        const originalInventory = await readFile(initialInventory, "utf8");
+        await writeFile(filePath, originalInventory, "utf8");
+        console.log("Inventory file reset to its original state.");
+    } catch (err) {
+        console.error("An error occurred while resetting the inventory file:", err);
+    }
+}
+
+export { saveInventoryToFile, loadInventoryFromFile, resetInventoryFile };
