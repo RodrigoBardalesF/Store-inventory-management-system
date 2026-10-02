@@ -16,7 +16,7 @@ const addProduct = async (filePath, product) => {
     }
     const addedItemList = [...fullInventory, value];
     await saveInventoryToFile(filePath, addedItemList);
-
+    console.log("Item added successfully.");
     } catch (err) {
         console.error("An error occurred while adding the product:", err);
     };
@@ -36,7 +36,7 @@ const removeProduct = async (filePath, productName) => {
         return;
     }
     const removeProductList = fullInventory.filter(item => item.name.toLowerCase() !== value.toLowerCase());
-    console.log(removeProductList);
+    //console.log(removeProductList);
     await saveInventoryToFile(filePath,removeProductList);
     console.log("Item deleted successfully.");
 

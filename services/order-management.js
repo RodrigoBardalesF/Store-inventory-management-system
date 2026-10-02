@@ -6,9 +6,9 @@ const updateInventory = async (inventory, productName, quantity, filePath) => {
     try {
 
     const item =inventory.find(item => item.name.toLowerCase() === productName.toLowerCase());
-    console.log(item);
+    //console.log(item);
     item.quantity = quantity;
-    console.log(item);
+    //console.log(item);
     await saveInventoryToFile(filePath, inventory);
     console.log("Inventory updated successfully." + "Remaining stock for " + item.name + ": " + item.quantity);
     
