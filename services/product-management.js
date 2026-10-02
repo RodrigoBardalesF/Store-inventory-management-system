@@ -10,8 +10,8 @@ const addProduct = async (filePath, product) => {
         return;
     }
     const fullInventory = await loadInventoryFromFile(filePath);
-    if (fullInventory.find(item => item.name.toLowerCase() === value.toLowerCase())) {
-        console.error(`Product with name "${value.name}" already exists in the inventory.`);
+    if (fullInventory.find(item => item.name === value)) {
+        console.error(`Product with name "${value}" already exists in the inventory.`);
         return;
     }
     const addedItemList = [...fullInventory, value];

@@ -1,4 +1,0 @@
-
-const createOrder = (productName, quantity) => {
-
-};
