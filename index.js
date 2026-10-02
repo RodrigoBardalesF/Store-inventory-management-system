@@ -1,44 +1,60 @@
 import { addProduct, removeProduct, searchByCategory, showOneProduct, listInventory } from "./services/product-management.js";
-import { saveInventoryToFile, loadInventoryFromFile } from "./utils/check-inventory.js";
+import { resetInventoryFile } from "./utils/check-inventory.js";
 import createOrder from "./services/order-management.js";
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+const logStep = async (message) => {
+    console.log("\n" + "-".repeat(60));
+    console.log(`  ${message}`);
+    console.log("-".repeat(60));
+    await sleep(3000)
+};
+
 const AcceptancePath = async () => {
-    console.log("--------------------------------");
-    console.log("Welcome to the Store Inventory and Management System!");
-    console.log("Showing the current inventory:");
-    console.log("--------------------------------");
+    // 1. Show the current inventory
+    await logStep("Welcome to the Store Inventory and Management System!");
+    await logStep("Showing the current inventory:");
     await listInventory("./data/inventory.txt");
-    await sleep(3000)
-    console.log("Choosing and showing one product: Radio")
-    console.log("--------------------------------");
+
+    // 2. Show the details of a specific product and category
+    await logStep("Choosing and showing one product: Radio")
     await showOneProduct("./data/inventory.txt", "Radio");
-    await sleep(3000)
-    console.log("Choosing and showing one category: Electronics")
-    console.log("--------------------------------");
+    await logStep("Choosing and showing one category: Electronics")
     await searchByCategory("./data/inventory.txt", "Electronics");
-    await sleep(3000)
-    console.log("Adding a product: Flashlight")
-    console.log("--------------------------------");
+
+    // 3. Add a new product and then delete it
+    await logStep("Adding a product: Flashlight")
     await addProduct("./data/inventory.txt", { name: "Flashlight", category: "Electronics", price: 9.99, stockQuantity: 15 });
-    console.log("--------------------------------");
-    await sleep(3000)
-    console.log("Deleting the product: Flashlight")
-    console.log("--------------------------------");
+    await showOneProduct("./data/inventory.txt", "Flashlight");
+    await logStep("Deleting the product: Flashlight")
     await removeProduct("./data/inventory.txt", "Flashlight");
-    console.log("--------------------------------");
-    await sleep(3000)
-    console.log("Creating an order for 4 Radios")
-    console.log("--------------------------------");
+    await listInventory("./data/inventory.txt");
+
+    // 4. Create an order for a product and creating an order with insufficient stock
+    await logStep("Creating an order for 4 Radios")
     await createOrder("Radio", 4, "./data/inventory.txt");
+    await logStep("Creating an order for 20 Fans")
+    await createOrder("Fan", 20, "./data/inventory.txt");
+
+
+    // 5. Edge cases
+    await logStep("EDGE CASES");
+    await logStep("Case 1: Short product name: R");
+    await showOneProduct("./data/inventory.txt", "R");
+    await logStep("Case 2: Non-existent product: TV");
+    await showOneProduct("./data/inventory.txt", "TV");
+    await logStep("Case 3: Non-existent category: Bedroom");
+    await searchByCategory("./data/inventory.txt", "Bedroom");
+    await logStep("Case 4: Adding a product with negative price and stock quantity: Radio");
+    await addProduct("./data/inventory.txt", { name: "Radio", category: "Electronics", price: -9.99, stockQuantity: -1 });
+    await logStep("Case 5: Creating an order with negative quantity for Radio");
+    await createOrder("Radio", -4, "./data/inventory.txt");
+
+    // 6. Reset the inventory file to its original state
+    await logStep("Resetting the inventory file to its original state.");
+    await resetInventoryFile("./data/inventory.txt", "./data/inventory-backup.txt");
 }
 
 await AcceptancePath();
 
-//await showOneProduct("./data/inventory.txt", "Radio");
-//await listInventory("./data/inventory.txt");
-//await searchByCategory("./data/inventory.txt", "Electronics");
-//await addProduct("./data/inventory.txt", { name: "Flashlight", category: "Electronics", price: 9.99, stockQuantity: 15 });
-//await removeProduct("./data/inventory.txt", "Flashlight");
-//await createOrder("Radio", 4, "./data/inventory.txt");

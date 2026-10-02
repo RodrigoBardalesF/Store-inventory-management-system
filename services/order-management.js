@@ -1,5 +1,5 @@
 import { loadInventoryFromFile, saveInventoryToFile } from "../utils/check-inventory.js";
-import { validateProductName } from "../models/product.schema.js";
+import { validateProductName, validateInputQuantity } from "../models/product.schema.js";
 
 
 const updateInventory = async (inventory, productName, quantity, filePath) => {
@@ -29,14 +29,19 @@ const createOrder = async (productName, quantity, filePath) => {
         console.error(error.details);
         return;
     };
+    const {error: quantityError, value: quantityValue} = validateInputQuantity(quantity);
+    if (quantityError) {
+        console.error(quantityError.details);
+        return;
+    }
     const listInventory = await loadInventoryFromFile(filePath);
     const product = listInventory.find(item => item.name.toLowerCase() === value.toLowerCase());
-    const substraction = product.quantity - quantity;
+    const substraction = product.quantity - quantityValue;
     console.log(`Remaining stock for ${product.name}: ${substraction}`);
     if (substraction > 0) {
         await updateInventory(listInventory, value, substraction, filePath);
-        const subtotal = calculateSubtotal(product.price, product.discount, quantity);
-        console.log(`Order created for ${quantity} ${product.name}(s). Unit price: $${product.price}. Applied discount: ${product.discount}%. Total price: $${subtotal.toFixed(2)}`);
+        const subtotal = calculateSubtotal(product.price, product.discount, quantityValue);
+        console.log(`Order created for ${quantityValue} ${product.name}(s). Unit price: $${product.price}. Applied discount: ${product.discount}%. Total price: $${subtotal.toFixed(2)}`);
     } else {
         console.error(`Insufficient stock for ${product.name}. Available quantity: ${product.quantity}. Requested quantity: ${quantity}.`);
     };

@@ -10,8 +10,8 @@ const addProduct = async (filePath, product) => {
         return;
     }
     const fullInventory = await loadInventoryFromFile(filePath);
-    if (fullInventory.find(item => item.name === value)) {
-        console.error(`Product with name "${value}" already exists in the inventory.`);
+    if (fullInventory.find(item => item.name === value.name)) {
+        console.error(`Product with name "${value.name}" already exists in the inventory.`);
         return;
     }
     const addedItemList = [...fullInventory, value];
@@ -39,7 +39,6 @@ const removeProduct = async (filePath, productName) => {
     //console.log(removeProductList);
     await saveInventoryToFile(filePath,removeProductList);
     console.log("Item deleted successfully.");
-
     } catch (err) {
         console.error("An error occurred while removing the product:", err);
     };
@@ -55,7 +54,7 @@ const searchByCategory = async (filePath, category) => {
     }
     const fullInventory = await loadInventoryFromFile(filePath);
      if (!fullInventory.find(item => item.category.toLowerCase() === value.toLowerCase())) {
-        console.error(`Category with name "${value.name}" does not exist in the inventory.`);
+        console.error(`Category with name "${value}" does not exist in the inventory.`);
         return;
     };
     const products = fullInventory.filter(item => item.category.toLowerCase() === value.toLowerCase());
@@ -76,7 +75,7 @@ const showOneProduct = async (filePath, productName) => {
     }
     const fullInventory = await loadInventoryFromFile(filePath);
     if (!fullInventory.find(item => item.name.toLowerCase() === value.toLowerCase())) {
-        console.error(`Product with name "${value.name}" does not exist in the inventory.`);
+        console.error(`Product with name "${value}" does not exist in the inventory.`);
         return;
     }
     const product = fullInventory.find(item => item.name.toLowerCase() === value.toLowerCase());
