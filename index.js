@@ -8,7 +8,6 @@ const logStep = async (message) => {
     console.log("\n" + "-".repeat(60));
     console.log(`  ${message}`);
     console.log("-".repeat(60));
-    await sleep(3000)
 };
 
 const AcceptancePath = async () => {

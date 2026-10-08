@@ -38,7 +38,7 @@ const createOrder = async (productName, quantity, filePath) => {
     const product = listInventory.find(item => item.name.toLowerCase() === value.toLowerCase());
     const substraction = product.quantity - quantityValue;
     console.log(`Remaining stock for ${product.name}: ${substraction}`);
-    if (substraction > 0) {
+    if (substraction >= 0) {
         await updateInventory(listInventory, value, substraction, filePath);
         const subtotal = calculateSubtotal(product.price, product.discount, quantityValue);
         console.log(`Order created for ${quantityValue} ${product.name}(s). Unit price: $${product.price}. Applied discount: ${product.discount}%. Total price: $${subtotal.toFixed(2)}`);
