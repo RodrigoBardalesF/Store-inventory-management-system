@@ -1,26 +1,30 @@
-import { addProduct, removeProduct, searchByCategory, showOneProduct, listInventory } from "./services/product-management.js";
-import { resetInventoryFile } from "./utils/check-inventory.js";
+import { addProduct, removeProduct, searchByCategory, showOneProduct } from "./services/product-management.js";
+import { loadInventoryFromFile, resetInventoryFile } from "./utils/check-inventory.js";
 import createOrder from "./services/order-management.js";
 
-await showOneProduct("./data/inventory.json", "Pot");
+//const product = await showOneProduct("./data/inventory.json", "Pot");
+//console.log(product);
 //await showOneProduct("./data/inventory.json", "P");
 //await showOneProduct("./data/inventory.json", -242);
 //await showOneProduct("./data/inventory.json", "Desk");
 
-//await listInventory("./data/inventory.json");
+const inventory = await loadInventoryFromFile("./data/inventory.json");
+console.log(inventory);
 
-//await searchByCategory("./data/inventory.json", "Garden");
+//const category = await searchByCategory("./data/inventory.json", "Garden");
+//console.log(category);
 //await searchByCategory("./data/inventory.json", "Sofa");
 
-//await addProduct("./data/inventory.json", { name: "Desk", category: "Furniture", price: 39.99, stockQuantity: 115 });
+//const addedProduct = await addProduct("./data/inventory.json", { name: "Desk", category: "Furniture", price: 39.99, stockQuantity: 115 });
+//console.log(addedProduct);
 //await addProduct("./data/inventory.json", { name: "Desk", category: "Electronics", price: 9.99, stockQuantity: 14 });
 //await addProduct("./data/inventory.json", { name: "Radio", category: "Electronics", price: -9.99, stockQuantity: -1 });
 
 //await removeProduct("./data/inventory.json", "Desk");
 //await removeProduct("./data/inventory.json", "Mouse");
 
-const order = await createOrder("Pan", 1, "./data/inventory.json");
-console.log(order);
+//const order = await createOrder("Pan", 15, "./data/inventory.json");
+//console.log(order);
 //await createOrder("Radio", -4, "./data/inventory.json");
 
 //await resetInventoryFile("./data/inventory.json", "./data/inventory-backup.json");

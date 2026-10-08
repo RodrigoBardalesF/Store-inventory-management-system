@@ -17,6 +17,13 @@ const addProduct = async (filePath, product) => {
     const addedItemList = [...fullInventory, value];
     await saveInventoryToFile(filePath, addedItemList);
     console.log("Item added successfully.");
+    return({
+        name: value.name,
+        category: value.category,
+        price: value.price,
+        stockQuantity: value.stockQuantity,
+        discount: value.discount
+    })
     } catch (err) {
         console.error("An error occurred while adding the product:", err);
     };
@@ -58,7 +65,7 @@ const searchByCategory = async (filePath, category) => {
         return;
     };
     const products = fullInventory.filter(item => item.category.toLowerCase() === value.toLowerCase());
-    console.log(products);
+    return products;
 
     } catch (err) {
     console.error("An error occurred while searching by category:", err);
@@ -80,25 +87,12 @@ const showOneProduct = async (filePath, productName) => {
     }
     const product = fullInventory.find(item => item.name.toLowerCase() === value.toLowerCase());
     console.log(product.name + " (" + product.category + ") - $" + product.price + " | Stock: " + product.quantity);
+    return product;
     
     } catch (err) {
     console.error("An error occurred while showing the product:", err);
     };
 };
 
-const listInventory = async (filePath) => {
-    try {
-        const fullInventory = await loadInventoryFromFile(filePath);
-        console.log(fullInventory);
-    } catch (err) {
-        console.error("An error occurred while listing the inventory:", err);
-    };
-};
 
-export { addProduct, removeProduct, searchByCategory, showOneProduct, listInventory };
-
-//listInventory("../Reading-saving-data/inventory.txt");
-//await showOneProduct("../Reading-saving-data/inventory.txt", "Radio");
-//searchByCategory("../Reading-saving-data/inventory.txt", "Electronics");
-//removeProduct("../Reading-saving-data/inventory.txt", "Radio");
-//addProduct("../Reading-saving-data/inventory.txt", { name: "Flashlight", category: "Electronics", price: 9.99, stockQuantity: 15, discount: 5 });
+export { addProduct, removeProduct, searchByCategory, showOneProduct };

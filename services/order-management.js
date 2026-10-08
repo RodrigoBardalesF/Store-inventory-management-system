@@ -17,8 +17,20 @@ const updateInventory = async (inventory, productName, quantity, filePath) => {
     };
 }
 
-const calculateSubtotal = (unitPrice, discount, quantity) => {
-    return unitPrice * quantity * (1 - discount / 100);
+const calculateSubtotal = (unitPrice, quantity) => {
+    const subtotal = unitPrice * quantity;
+    if (subtotal >= 500) {
+        return subtotal * (1 - 15 / 100);
+    }
+    else if (subtotal >= 200) {
+        return subtotal * (1 - 10 / 100);
+    }
+    else if (subtotal >= 100) {
+        return subtotal * (1 - 5 / 100);
+    }
+    else {
+        return subtotal;
+    }
 }
 
 const createOrder = async (productName, quantity, filePath) => {
@@ -40,11 +52,10 @@ const createOrder = async (productName, quantity, filePath) => {
     console.log(`Remaining stock for ${product.name}: ${substraction}`);
     if (substraction >= 0) {
         await updateInventory(listInventory, value, substraction, filePath);
-        const subtotal = calculateSubtotal(product.price, product.discount, quantityValue);
-        //console.log(`Order created for ${quantityValue} ${product.name}(s). Unit price: $${product.price}. Applied discount: ${product.discount}%. Total price: $${subtotal.toFixed(2)}`);
+        const subtotal = calculateSubtotal(product.price, quantityValue);
         return ({
-            product: product.name,
-            quantity: quantityValue,
+            productName: product.name,
+            orderedQuantity: quantityValue,
             unitPrice: product.price,
             totalPrice: subtotal.toFixed(2)
         })
@@ -59,4 +70,3 @@ const createOrder = async (productName, quantity, filePath) => {
 
 export default createOrder;
 
-//createOrder("Radio", 4, "../Reading-saving-data/inventory.txt");

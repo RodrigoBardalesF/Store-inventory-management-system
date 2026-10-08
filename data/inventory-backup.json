@@ -3,29 +3,29 @@
     {
         "name": "Radio",
         "category": "Electronics",
-        "price": 15.00,
-        "quantity": 10,
+        "price": 150.00,
+        "quantity": 20,
         "discount": 5
     },
     {
         "name" : "Pan",
         "category": "Cooking",
-        "price": 10.00,
-        "quantity": 5,
+        "price": 100.00,
+        "quantity": 50,
         "discount": 0
     },
     {
         "name" : "Pot",
         "category": "Garden",
-        "price": 8.00,
-        "quantity": 3,
+        "price": 80.00,
+        "quantity": 30,
         "discount": 10
     },
     {
         "name" : "Fan",
         "category": "Electronics",
-        "price": 20.00,
-        "quantity": 10,
+        "price": 200.00,
+        "quantity": 100,
         "discount": 15
     }
 ]

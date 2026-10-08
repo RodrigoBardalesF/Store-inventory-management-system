@@ -1,4 +1,4 @@
-import { addProduct, removeProduct, searchByCategory, showOneProduct, listInventory } from "./services/product-management.js";
+import { addProduct, removeProduct, searchByCategory, showOneProduct } from "./services/product-management.js";
 import { resetInventoryFile } from "./utils/check-inventory.js";
 import createOrder from "./services/order-management.js";
 
@@ -14,7 +14,8 @@ const AcceptancePath = async () => {
     // 1. Show the current inventory
     await logStep("Welcome to the Store Inventory and Management System!");
     await logStep("Showing the current inventory:");
-    await listInventory("./data/inventory.json");
+    const inventory = await loadInventoryFromFile("./data/inventory.json");
+    console.log(inventory);
 
     // 2. Show the details of a specific product and category
     await logStep("Choosing and showing one product: Radio")
