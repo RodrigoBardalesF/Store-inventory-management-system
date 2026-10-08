@@ -41,7 +41,13 @@ const createOrder = async (productName, quantity, filePath) => {
     if (substraction >= 0) {
         await updateInventory(listInventory, value, substraction, filePath);
         const subtotal = calculateSubtotal(product.price, product.discount, quantityValue);
-        console.log(`Order created for ${quantityValue} ${product.name}(s). Unit price: $${product.price}. Applied discount: ${product.discount}%. Total price: $${subtotal.toFixed(2)}`);
+        //console.log(`Order created for ${quantityValue} ${product.name}(s). Unit price: $${product.price}. Applied discount: ${product.discount}%. Total price: $${subtotal.toFixed(2)}`);
+        return ({
+            product: product.name,
+            quantity: quantityValue,
+            unitPrice: product.price,
+            totalPrice: subtotal.toFixed(2)
+        })
     } else {
         console.error(`Insufficient stock for ${product.name}. Available quantity: ${product.quantity}. Requested quantity: ${quantity}.`);
     };

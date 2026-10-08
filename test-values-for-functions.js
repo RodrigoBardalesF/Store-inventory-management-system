@@ -19,7 +19,8 @@ await showOneProduct("./data/inventory.json", "Pot");
 //await removeProduct("./data/inventory.json", "Desk");
 //await removeProduct("./data/inventory.json", "Mouse");
 
-//await createOrder("Pan", 1, "./data/inventory.json");
+const order = await createOrder("Pan", 1, "./data/inventory.json");
+console.log(order);
 //await createOrder("Radio", -4, "./data/inventory.json");
 
 //await resetInventoryFile("./data/inventory.json", "./data/inventory-backup.json");
