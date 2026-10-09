@@ -1,81 +1,45 @@
-import { addProduct, removeProduct, searchByCategory, showOneProduct } from "./services/product-management.js";
 import { resetInventoryFile } from "./utils/check-inventory.js";
-import createOrder from "./services/order-management.js";
-import { CreateInventory } from './services/product-management.js';
-
-const main = async () => {
-
-    const newInventory = new CreateInventory("./data/inventory.json");
-
-    await newInventory.load("./data/inventory.json");
-    newInventory.showOneProduct("Radio");
-    newInventory.searchByCategory("Electronics");
-    newInventory.addProduct({ name: "Flashlight", category: "Electronics", price: 9.99, stockQuantity: 15 });
-    newInventory.showInventory();
-    newInventory.removeProduct("Flashlight");
-    newInventory.showInventory();
-    newInventory.addProduct({ name: "Desk", category: "Furniture", price: 9.99, stockQuantity: 15 });
-    newInventory.addProduct({ name: "Chair", category: "Furniture", price: 9.99, stockQuantity: 15 });
-    await newInventory.save();
-    await newInventory.load();
-
-}
-
-main();
-
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-const logStep = async (message) => {
-    console.log("\n" + "-".repeat(60));
-    console.log(`  ${message}`);
-    console.log("-".repeat(60));
-};
-
-const AcceptancePath = async () => {
-    // 1. Show the current inventory
-    await logStep("Welcome to the Store Inventory and Management System!");
-    await logStep("Showing the current inventory:");
-    const inventory = await loadInventoryFromFile("./data/inventory.json");
-    console.log(inventory);
-
-    // 2. Show the details of a specific product and category
-    await logStep("Choosing and showing one product: Radio")
-    await showOneProduct("./data/inventory.json", "Radio");
-    await logStep("Choosing and showing one category: Electronics")
-    await searchByCategory("./data/inventory.json", "Electronics");
-
-    // 3. Add a new product and then delete it
-    await logStep("Adding a product: Flashlight")
-    await addProduct("./data/inventory.json", { name: "Flashlight", category: "Electronics", price: 9.99, stockQuantity: 15 });
-    await showOneProduct("./data/inventory.json", "Flashlight");
-    await logStep("Deleting the product: Flashlight")
-    await removeProduct("./data/inventory.json", "Flashlight");
-    await listInventory("./data/inventory.json");
-
-    // 4. Create an order for a product and creating an order with insufficient stock
-    await logStep("Creating an order for 4 Radios")
-    await createOrder("Radio", 4, "./data/inventory.json");
-    await logStep("Creating an order for 20 Fans")
-    await createOrder("Fan", 20, "./data/inventory.json");
+import { MakeOrder } from "./services/order-management.js";
+import { StoreInventory } from './services/product-management.js';
 
 
-    // 5. Edge cases
-    await logStep("EDGE CASES");
-    await logStep("Case 1: Short product name: R");
-    await showOneProduct("./data/inventory.json", "R");
-    await logStep("Case 2: Non-existent product: TV");
-    await showOneProduct("./data/inventory.json", "TV");
-    await logStep("Case 3: Non-existent category: Bedroom");
-    await searchByCategory("./data/inventory.json", "Bedroom");
-    await logStep("Case 4: Adding a product with negative price and stock quantity: Radio");
-    await addProduct("./data/inventory.json", { name: "Radio", category: "Electronics", price: -9.99, stockQuantity: -1 });
-    await logStep("Case 5: Creating an order with negative quantity for Radio");
-    await createOrder("Radio", -4, "./data/inventory.json");
+const newInventory = new StoreInventory("./data/inventory.json");
 
-    // 6. Reset the inventory file to its original state
-    await logStep("Resetting the inventory file to its original state.");
-    await resetInventoryFile("./data/inventory.json", "./data/inventory-backup.json");
-}
+//Loading the inventory from the file
 
-await AcceptancePath();
+await newInventory.load();
+
+//CRUD operations on the inventory
+
+newInventory.showOneProduct("Radio");
+newInventory.searchByCategory("Electronics");
+newInventory.addProduct({ name: "Flashlight", category: "Electronics", price: 9.99, stockQuantity: 15 });
+newInventory.showInventory();
+newInventory.removeProduct("Flashlight");
+newInventory.showInventory();
+newInventory.addProduct({ name: "Desk", category: "Furniture", price: 9.99, stockQuantity: 15 });
+newInventory.addProduct({ name: "Chair", category: "Furniture", price: 9.99, stockQuantity: 15 });
+await newInventory.save();
+await newInventory.load();
+
+//Creating an order and updating the inventory
+
+const order = new MakeOrder(newInventory);
+order.printStoreInventory();
+const order1 = await order.createOrder("Radio", 4);
+console.log(order1)
+const order2 = await order.createOrder("Pan", 10);
+console.log(order2)
+await newInventory.save();
+
+//Edge cases for CRUD operations and order creation
+newInventory.showOneProduct("R");
+newInventory.searchByCategory("4");
+newInventory.addProduct({ name: "Flashlight", category: "Electronics", stockQuantity: 15 });
+newInventory.removeProduct("Socks");
+
+
+//Restoring the inventory to its original state
+await resetInventoryFile("./data/inventory.json", "./data/inventory-backup.json");
+
 

@@ -1,12 +1,13 @@
 import { saveInventoryToFile, loadInventoryFromFile } from "../utils/check-inventory.js";
 import { validateNewProduct, validateProductName } from "../models/product.schema.js";
 
-const createInventory = (filePath) => {
-
-    let inventory = [];
-    const path = filePath;
-
-    const addProduct = (product) => { 
+class StoreInventory {
+    constructor(filePath) {
+        this.inventory = [];
+        this.path = filePath;
+    }
+    
+    addProduct(product) { 
     try {
 
     const {error, value} = validateNewProduct(product);
@@ -14,12 +15,12 @@ const createInventory = (filePath) => {
         console.error(error.details);
         return;
     }
-    const fullInventory = inventory;
+    const fullInventory = this.inventory;
     if (fullInventory.find(item => item.name === value.name)) {
         console.error(`Product with name "${value.name}" already exists in the inventory.`);
         return;
     }
-    inventory.push(value);
+    this.inventory.push(value);
     console.log("Item added successfully. ");
     console.log(value);
     return({
@@ -34,7 +35,7 @@ const createInventory = (filePath) => {
     };
     };
 
-    const removeProduct = async (productName) => {
+    removeProduct = async (productName) => {
     try {
 
     const {error, value} = validateProductName(productName);
@@ -42,19 +43,19 @@ const createInventory = (filePath) => {
         console.error(error.details);
         return;
     }
-    const fullInventory = inventory;
+    const fullInventory = this.inventory;
     if (!fullInventory.find(item => item.name.toLowerCase() === value.toLowerCase())) {
         console.error(`Product with name "${productName}" does not exist in the inventory.`);
         return;
     }
-    inventory = inventory.filter(item => item.name.toLowerCase() !== value.toLowerCase());
+    this.inventory = this.inventory.filter(item => item.name.toLowerCase() !== value.toLowerCase());
     console.log("Item deleted successfully.");
     } catch (err) {
         console.error("An error occurred while removing the product:", err);
     };
     };
 
-    const searchByCategory = (category) => {
+    searchByCategory(category) {
     try {
 
     const {error, value} = validateProductName(category);
@@ -62,7 +63,7 @@ const createInventory = (filePath) => {
         console.error(error.details);
         return;
     }
-    const fullInventory = inventory;
+    const fullInventory = this.inventory;
      if (!fullInventory.find(item => item.category.toLowerCase() === value.toLowerCase())) {
         console.error(`Category with name "${value}" does not exist in the inventory.`);
         return;
@@ -76,7 +77,7 @@ const createInventory = (filePath) => {
     };
     };
 
-    const showOneProduct = (productName) => {
+    showOneProduct(productName) {
     try {
 
         const {error, value} = validateProductName(productName);
@@ -84,13 +85,13 @@ const createInventory = (filePath) => {
         console.error(error.details);
         return;
     }
-        const fullInventory = inventory;
+        const fullInventory = this.inventory;
     if (!fullInventory.find(item => item.name.toLowerCase() === value.toLowerCase())) {
         console.error(`Product with name "${value}" does not exist in the inventory.`);
         return;
     }
         const product = fullInventory.find(item => item.name.toLowerCase() === value.toLowerCase());
-    console.log(product.name + " (" + product.category + ") - $" + product.price + " | Stock: " + product.quantity);
+    console.log(product.name + " (" + product.category + ") - $" + product.price + " | Stock: " + product.stockQuantity);
     return product;
     
     } catch (err) {
@@ -98,30 +99,22 @@ const createInventory = (filePath) => {
     };
     };
 
-    const load = async () => {
-        inventory = await loadInventoryFromFile(path);
+    load = async () => {
+        this.inventory = await loadInventoryFromFile(this.path);
         console.log("Inventory loaded successfully from file.");
-        console.log(inventory);
-        return inventory;
+        console.log(this.inventory);
+        return this.inventory;
     };
     
-    const save = async () => {
-        await saveInventoryToFile(path, inventory);
+    save = async () => {
+        await saveInventoryToFile(this.path, this.inventory);
     };
 
-    const showInventory = () => {
-        console.log(inventory);
-        return inventory;
+    showInventory = () => {
+        console.log(this.inventory);
+        return this.inventory;
     };
 
-    return {
-        addProduct,
-        removeProduct,
-        searchByCategory,
-        showOneProduct,
-        save,
-        load,
-        showInventory
-    }
 };
-export { createInventory };
+
+export { StoreInventory };

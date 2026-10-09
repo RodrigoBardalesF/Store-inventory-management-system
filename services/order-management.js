@@ -1,40 +1,68 @@
-import { loadInventoryFromFile, saveInventoryToFile } from "../utils/check-inventory.js";
 import { validateProductName, validateInputQuantity } from "../models/product.schema.js";
-import { createInventory } from "./product-management.js";
 
-const makeOrder = (store) => {
+class MakeOrder {
+    constructor(store) {
+        this.currentInventory = store;
+    }
+    
+    printStoreInventory() {
+        const inventory = this.currentInventory.inventory;
+        console.log("Current Store Inventory:");
+        console.log(inventory);
+    };
 
-    const currentInventory = store;
-    const updateInventory = async (productName, quantity) => {
+    updateInventory = async (productName, quantity) => {
     try {
 
-    const item = currentInventory.showOneProduct(productName);
+    const item = this.currentInventory.showOneProduct(productName);
     item.quantity = quantity;
-    await currentInventory.save();
-    console.log("Inventory updated successfully." + "Remaining stock for " + item.name + ": " + item.quantity);
+    console.log("Inventory updated successfully." + "Remaining stock for " + item.name + ": " + item.stockQuantity);
     
     } catch (err) {
         console.error("An error occurred while updating the inventory:", err);
     };
-    }
+    };
 
-    const calculateSubtotal = (unitPrice, quantity) => {
+    calculateSubtotal (unitPrice, quantity) {
     const subtotal = unitPrice * quantity;
     if (subtotal >= 500) {
-        return subtotal * (1 - 15 / 100);
+        const discountedAmount = subtotal * (0.15)
+        return {
+            subtotal:subtotal,
+            discountedAmount: discountedAmount,
+            discountRate:"15%",
+            total: subtotal - discountedAmount
+        };
     }
     else if (subtotal >= 200) {
-        return subtotal * (1 - 10 / 100);
+                const discountedAmount = subtotal * (0.10)
+        return {
+            subtotal:subtotal,
+            discountedAmount: discountedAmount,
+            discountRate:"10%",
+            total: subtotal - discountedAmount
+        };
     }
     else if (subtotal >= 100) {
-        return subtotal * (1 - 5 / 100);
+                const discountedAmount = subtotal * (0.05)
+        return {
+            subtotal:subtotal,
+            discountedAmount: discountedAmount,
+            discountRate:"5%",
+            total: subtotal - discountedAmount
+        };
     }
     else {
-        return subtotal;
+        return {
+            subtotal: subtotal,
+            discountedAmount: 0,
+            discountRate:"0%",
+            total: subtotal
+        };
     }
     }
 
-    const createOrder = async (productName, quantity) => {
+    createOrder = async (productName, quantity) => {
     try {
 
     const {error, value} = validateProductName(productName);
@@ -42,22 +70,26 @@ const makeOrder = (store) => {
         console.error(error.details);
         return;
     };
+
     const {error: quantityError, value: quantityValue} = validateInputQuantity(quantity);
     if (quantityError) {
         console.error(quantityError.details);
         return;
-    }
-    const product = currentInventory.showOneProduct(value);
+    };
+
+    const product = this.currentInventory.showOneProduct(value);
     const substraction = product.quantity - quantityValue;
     console.log(`Remaining stock for ${product.name}: ${substraction}`);
     if (substraction >= 0) {
-        await updateInventory(value, substraction);
-        const subtotal = calculateSubtotal(product.price, quantityValue);
+        await this.updateInventory(value, substraction);
+        const subtotal = this.calculateSubtotal(product.price, quantityValue);
         return ({
             productName: product.name,
             orderedQuantity: quantityValue,
             unitPrice: product.price,
-            totalPrice: subtotal.toFixed(2)
+            finalTotal: subtotal.total,
+            appliedDiscountRate: subtotal.discountRate,
+            discountedAmount: subtotal.discountedAmount
         })
     } else {
         console.error(`Insufficient stock for ${product.name}. Available quantity: ${product.quantity}. Requested quantity: ${quantity}.`);
@@ -67,10 +99,8 @@ const makeOrder = (store) => {
         console.error("An error occurred while creating the order:", err);
     };
   };
-    return {
-        createOrder
-    };
+   
 };
 
-export  { makeOrder };
+export  { MakeOrder };
 
