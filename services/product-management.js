@@ -69,7 +69,7 @@ class StoreInventory {
         return;
     };
     const products = fullInventory.filter(item => item.category.toLowerCase() === value.toLowerCase());
-    console.log(products);
+    console.log(JSON.stringify(products, null, 2));
     return products;
 
     } catch (err) {
@@ -90,7 +90,7 @@ class StoreInventory {
         console.error(`Product with name "${value}" does not exist in the inventory.`);
         return;
     }
-        const product = fullInventory.find(item => item.name.toLowerCase() === value.toLowerCase());
+    const product = fullInventory.find(item => item.name.toLowerCase() === value.toLowerCase());
     console.log(product.name + " (" + product.category + ") - $" + product.price + " | Stock: " + product.stockQuantity);
     return product;
     
@@ -102,7 +102,7 @@ class StoreInventory {
     load = async () => {
         this.inventory = await loadInventoryFromFile(this.path);
         console.log("Inventory loaded successfully from file.");
-        console.log(this.inventory);
+        console.log(JSON.stringify(this.inventory, null, 2));
         return this.inventory;
     };
     
@@ -111,7 +111,7 @@ class StoreInventory {
     };
 
     showInventory = () => {
-        console.log(this.inventory);
+        console.log(JSON.stringify(this.inventory, null, 2));
         return this.inventory;
     };
 

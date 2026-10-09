@@ -1,9 +1,13 @@
 import { readFile, writeFile } from "node:fs/promises";
+import { Product } from "../models/Product.js";  
 
 const saveInventoryToFile = async (filePath, inventory) => {
     try {
-        
-        await writeFile(filePath, JSON.stringify(inventory), "utf8");
+        const data = inventory.map(item =>
+            item instanceof Product ? item.toJSON() : item
+        );
+        await writeFile(filePath, JSON.stringify(data, null, 2), "utf8");
+        console.log("Data saved")
     } catch (err) {
         console.error("An error occurred while saving the inventory to file:", err);
     };
@@ -11,8 +15,11 @@ const saveInventoryToFile = async (filePath, inventory) => {
 
 const loadInventoryFromFile = async (filePath) => {
     try {
-    const result = await readFile(filePath, "utf8");
-    return JSON.parse(result);
+
+        const rawData = await readFile(filePath, "utf8");
+        const data = JSON.parse(rawData);
+        return data.map(item => Product.fromJSON(item));
+        
     } catch (err) {
         console.error("An error occurred while loading the inventory from file:", err);
         return [];

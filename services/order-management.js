@@ -8,15 +8,14 @@ class MakeOrder {
     printStoreInventory() {
         const inventory = this.currentInventory.inventory;
         console.log("Current Store Inventory:");
-        console.log(inventory);
+        console.log(JSON.stringify(inventory, null, 2));
     };
 
-    updateInventory = async (productName, quantity) => {
+    updateInventory = async (product, quantity) => {
     try {
 
-    const item = this.currentInventory.showOneProduct(productName);
-    item.quantity = quantity;
-    console.log("Inventory updated successfully." + "Remaining stock for " + item.name + ": " + item.stockQuantity);
+    product.stockQuantity = quantity;
+    console.log("Inventory updated successfully." + "Remaining stock for " + product.name + ": " + product.stockQuantity);
     
     } catch (err) {
         console.error("An error occurred while updating the inventory:", err);
@@ -30,7 +29,7 @@ class MakeOrder {
         return {
             subtotal:subtotal,
             discountedAmount: discountedAmount,
-            discountRate:"15%",
+            discountRate:15,
             total: subtotal - discountedAmount
         };
     }
@@ -39,7 +38,7 @@ class MakeOrder {
         return {
             subtotal:subtotal,
             discountedAmount: discountedAmount,
-            discountRate:"10%",
+            discountRate:10,
             total: subtotal - discountedAmount
         };
     }
@@ -48,7 +47,7 @@ class MakeOrder {
         return {
             subtotal:subtotal,
             discountedAmount: discountedAmount,
-            discountRate:"5%",
+            discountRate:5,
             total: subtotal - discountedAmount
         };
     }
@@ -56,7 +55,7 @@ class MakeOrder {
         return {
             subtotal: subtotal,
             discountedAmount: 0,
-            discountRate:"0%",
+            discountRate:0,
             total: subtotal
         };
     }
@@ -78,10 +77,10 @@ class MakeOrder {
     };
 
     const product = this.currentInventory.showOneProduct(value);
-    const substraction = product.quantity - quantityValue;
+    const substraction = product.stockQuantity - quantityValue;
     console.log(`Remaining stock for ${product.name}: ${substraction}`);
     if (substraction >= 0) {
-        await this.updateInventory(value, substraction);
+        await this.updateInventory(product, substraction);
         const subtotal = this.calculateSubtotal(product.price, quantityValue);
         return ({
             productName: product.name,
@@ -92,7 +91,7 @@ class MakeOrder {
             discountedAmount: subtotal.discountedAmount
         })
     } else {
-        console.error(`Insufficient stock for ${product.name}. Available quantity: ${product.quantity}. Requested quantity: ${quantity}.`);
+        console.error(`Insufficient stock for ${product.name}. Available quantity: ${product.stockQuantity}. Requested quantity: ${quantity}.`);
     };
 
     } catch (err) {

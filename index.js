@@ -11,21 +11,23 @@ await newInventory.load();
 
 //CRUD operations on the inventory
 
+console.log("--- CRUD Operations ---");
+
 newInventory.showOneProduct("Radio");
 newInventory.searchByCategory("Electronics");
-newInventory.addProduct({ name: "Flashlight", category: "Electronics", price: 9.99, stockQuantity: 15 });
+newInventory.addProduct({ name: "Flashlight", category: "Electronics", price: 9.99, stockQuantity: 15, discount:5 });
 newInventory.showInventory();
 newInventory.removeProduct("Flashlight");
 newInventory.showInventory();
-newInventory.addProduct({ name: "Desk", category: "Furniture", price: 9.99, stockQuantity: 15 });
-newInventory.addProduct({ name: "Chair", category: "Furniture", price: 9.99, stockQuantity: 15 });
+newInventory.addProduct({ name: "Desk", category: "Furniture", price: 9.99, stockQuantity: 15, discount:5 });
+newInventory.addProduct({ name: "Chair", category: "Furniture", price: 9.99, stockQuantity: 15, discount:5 });
 await newInventory.save();
-await newInventory.load();
 
 //Creating an order and updating the inventory
 
+console.log("--- Creating order ---");
+
 const order = new MakeOrder(newInventory);
-order.printStoreInventory();
 const order1 = await order.createOrder("Radio", 4);
 console.log(order1)
 const order2 = await order.createOrder("Pan", 10);
@@ -33,13 +35,16 @@ console.log(order2)
 await newInventory.save();
 
 //Edge cases for CRUD operations and order creation
+
+console.log("--- Edge cases ---");
+
 newInventory.showOneProduct("R");
 newInventory.searchByCategory("4");
 newInventory.addProduct({ name: "Flashlight", category: "Electronics", stockQuantity: 15 });
 newInventory.removeProduct("Socks");
 
 
-//Restoring the inventory to its original state
+//Restoring the inventory to its original state 
 await resetInventoryFile("./data/inventory.json", "./data/inventory-backup.json");
 
 
