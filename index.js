@@ -1,11 +1,11 @@
 import { addProduct, removeProduct, searchByCategory, showOneProduct } from "./services/product-management.js";
 import { resetInventoryFile } from "./utils/check-inventory.js";
 import createOrder from "./services/order-management.js";
-import { createInventory } from './services/product-management.js';
+import { CreateInventory } from './services/product-management.js';
 
 const main = async () => {
 
-    const newInventory = createInventory("./data/inventory.json");
+    const newInventory = new CreateInventory("./data/inventory.json");
 
     await newInventory.load("./data/inventory.json");
     newInventory.showOneProduct("Radio");

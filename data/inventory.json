@@ -1,1 +1,31 @@
-[{"name":"Radio","category":"Electronics","price":150,"quantity":20,"discount":5},{"name":"Pan","category":"Cooking","price":100,"quantity":50,"discount":0},{"name":"Pot","category":"Garden","price":80,"quantity":30,"discount":10},{"name":"Fan","category":"Electronics","price":200,"quantity":100,"discount":15},{"name":"Desk","category":"Furniture","price":9.99,"stockQuantity":15},{"name":"Chair","category":"Furniture","price":9.99,"stockQuantity":15}]
+
+[
+    {
+        "name": "Radio",
+        "category": "Electronics",
+        "price": 150.00,
+        "quantity": 20,
+        "discount": 5
+    },
+    {
+        "name" : "Pan",
+        "category": "Cooking",
+        "price": 100.00,
+        "quantity": 50,
+        "discount": 0
+    },
+    {
+        "name" : "Pot",
+        "category": "Garden",
+        "price": 80.00,
+        "quantity": 30,
+        "discount": 10
+    },
+    {
+        "name" : "Fan",
+        "category": "Electronics",
+        "price": 200.00,
+        "quantity": 100,
+        "discount": 15
+    }
+]

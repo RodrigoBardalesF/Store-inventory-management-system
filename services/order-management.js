@@ -1,23 +1,24 @@
 import { loadInventoryFromFile, saveInventoryToFile } from "../utils/check-inventory.js";
 import { validateProductName, validateInputQuantity } from "../models/product.schema.js";
+import { createInventory } from "./product-management.js";
 
+const makeOrder = (store) => {
 
-const updateInventory = async (inventory, productName, quantity, filePath) => {
+    const currentInventory = store;
+    const updateInventory = async (productName, quantity) => {
     try {
 
-    const item =inventory.find(item => item.name.toLowerCase() === productName.toLowerCase());
-    //console.log(item);
+    const item = currentInventory.showOneProduct(productName);
     item.quantity = quantity;
-    //console.log(item);
-    await saveInventoryToFile(filePath, inventory);
+    await currentInventory.save();
     console.log("Inventory updated successfully." + "Remaining stock for " + item.name + ": " + item.quantity);
     
     } catch (err) {
         console.error("An error occurred while updating the inventory:", err);
     };
-}
+    }
 
-const calculateSubtotal = (unitPrice, quantity) => {
+    const calculateSubtotal = (unitPrice, quantity) => {
     const subtotal = unitPrice * quantity;
     if (subtotal >= 500) {
         return subtotal * (1 - 15 / 100);
@@ -31,9 +32,9 @@ const calculateSubtotal = (unitPrice, quantity) => {
     else {
         return subtotal;
     }
-}
+    }
 
-const createOrder = async (productName, quantity, filePath) => {
+    const createOrder = async (productName, quantity) => {
     try {
 
     const {error, value} = validateProductName(productName);
@@ -46,12 +47,11 @@ const createOrder = async (productName, quantity, filePath) => {
         console.error(quantityError.details);
         return;
     }
-    const listInventory = await loadInventoryFromFile(filePath);
-    const product = listInventory.find(item => item.name.toLowerCase() === value.toLowerCase());
+    const product = currentInventory.showOneProduct(value);
     const substraction = product.quantity - quantityValue;
     console.log(`Remaining stock for ${product.name}: ${substraction}`);
     if (substraction >= 0) {
-        await updateInventory(listInventory, value, substraction, filePath);
+        await updateInventory(value, substraction);
         const subtotal = calculateSubtotal(product.price, quantityValue);
         return ({
             productName: product.name,
@@ -66,7 +66,11 @@ const createOrder = async (productName, quantity, filePath) => {
     } catch (err) {
         console.error("An error occurred while creating the order:", err);
     };
+  };
+    return {
+        createOrder
+    };
 };
 
-export default createOrder;
+export  { makeOrder };
 
