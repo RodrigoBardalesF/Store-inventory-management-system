@@ -1,60 +1,50 @@
-import { addProduct, removeProduct, searchByCategory, showOneProduct, listInventory } from "./services/product-management.js";
 import { resetInventoryFile } from "./utils/check-inventory.js";
-import createOrder from "./services/order-management.js";
-
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-const logStep = async (message) => {
-    console.log("\n" + "-".repeat(60));
-    console.log(`  ${message}`);
-    console.log("-".repeat(60));
-    await sleep(3000)
-};
-
-const AcceptancePath = async () => {
-    // 1. Show the current inventory
-    await logStep("Welcome to the Store Inventory and Management System!");
-    await logStep("Showing the current inventory:");
-    await listInventory("./data/inventory.txt");
-
-    // 2. Show the details of a specific product and category
-    await logStep("Choosing and showing one product: Radio")
-    await showOneProduct("./data/inventory.txt", "Radio");
-    await logStep("Choosing and showing one category: Electronics")
-    await searchByCategory("./data/inventory.txt", "Electronics");
-
-    // 3. Add a new product and then delete it
-    await logStep("Adding a product: Flashlight")
-    await addProduct("./data/inventory.txt", { name: "Flashlight", category: "Electronics", price: 9.99, stockQuantity: 15 });
-    await showOneProduct("./data/inventory.txt", "Flashlight");
-    await logStep("Deleting the product: Flashlight")
-    await removeProduct("./data/inventory.txt", "Flashlight");
-    await listInventory("./data/inventory.txt");
-
-    // 4. Create an order for a product and creating an order with insufficient stock
-    await logStep("Creating an order for 4 Radios")
-    await createOrder("Radio", 4, "./data/inventory.txt");
-    await logStep("Creating an order for 20 Fans")
-    await createOrder("Fan", 20, "./data/inventory.txt");
+import { MakeOrder } from "./services/order-management.js";
+import { StoreInventory } from './services/product-management.js';
 
 
-    // 5. Edge cases
-    await logStep("EDGE CASES");
-    await logStep("Case 1: Short product name: R");
-    await showOneProduct("./data/inventory.txt", "R");
-    await logStep("Case 2: Non-existent product: TV");
-    await showOneProduct("./data/inventory.txt", "TV");
-    await logStep("Case 3: Non-existent category: Bedroom");
-    await searchByCategory("./data/inventory.txt", "Bedroom");
-    await logStep("Case 4: Adding a product with negative price and stock quantity: Radio");
-    await addProduct("./data/inventory.txt", { name: "Radio", category: "Electronics", price: -9.99, stockQuantity: -1 });
-    await logStep("Case 5: Creating an order with negative quantity for Radio");
-    await createOrder("Radio", -4, "./data/inventory.txt");
+const newInventory = new StoreInventory("./data/inventory.json");
 
-    // 6. Reset the inventory file to its original state
-    await logStep("Resetting the inventory file to its original state.");
-    await resetInventoryFile("./data/inventory.txt", "./data/inventory-backup.txt");
-}
+//Loading the inventory from the file
 
-await AcceptancePath();
+await newInventory.load();
+
+//CRUD operations on the inventory
+
+console.log("--- CRUD Operations ---");
+
+newInventory.showOneProduct("Radio");
+newInventory.searchByCategory("Electronics");
+newInventory.addProduct({ name: "Flashlight", category: "Electronics", price: 9.99, stockQuantity: 15, discount:5 });
+newInventory.showInventory();
+newInventory.removeProduct("Flashlight");
+newInventory.showInventory();
+newInventory.addProduct({ name: "Desk", category: "Furniture", price: 9.99, stockQuantity: 15, discount:5 });
+newInventory.addProduct({ name: "Chair", category: "Furniture", price: 9.99, stockQuantity: 15, discount:5 });
+await newInventory.save();
+
+//Creating an order and updating the inventory
+
+console.log("--- Creating order ---");
+
+const order = new MakeOrder(newInventory);
+const order1 = await order.createOrder("Radio", 4);
+console.log(order1)
+const order2 = await order.createOrder("Pan", 10);
+console.log(order2)
+await newInventory.save();
+
+//Edge cases for CRUD operations and order creation
+
+console.log("--- Edge cases ---");
+
+newInventory.showOneProduct("R");
+newInventory.searchByCategory("4");
+newInventory.addProduct({ name: "Flashlight", category: "Electronics", stockQuantity: 15 });
+newInventory.removeProduct("Socks");
+
+
+//Restoring the inventory to its original state 
+await resetInventoryFile("./data/inventory.json", "./data/inventory-backup.json");
+
 
