@@ -1,5 +1,5 @@
-import { addProduct, removeProduct, searchByCategory, showOneProduct } from "./services/product-management.js";
-import { loadInventoryFromFile, resetInventoryFile } from "./utils/check-inventory.js";
+import { addProduct, removeProduct, searchByCategory, showOneProduct, addedProducts } from "./services/product-management.js";
+import { loadInventoryFromFile, resetInventoryFile, saveInventoryToFile } from "./utils/check-inventory.js";
 import createOrder from "./services/order-management.js";
 
 //const product = await showOneProduct("./data/inventory.json", "Pot");
@@ -8,15 +8,19 @@ import createOrder from "./services/order-management.js";
 //await showOneProduct("./data/inventory.json", -242);
 //await showOneProduct("./data/inventory.json", "Desk");
 
-const inventory = await loadInventoryFromFile("./data/inventory.json");
-console.log(inventory);
-
 //const category = await searchByCategory("./data/inventory.json", "Garden");
 //console.log(category);
 //await searchByCategory("./data/inventory.json", "Sofa");
 
-//const addedProduct = await addProduct("./data/inventory.json", { name: "Desk", category: "Furniture", price: 39.99, stockQuantity: 115 });
-//console.log(addedProduct);
+const addedProduct1 = await addProduct("./data/inventory.json", { name: "asdsd", category: "Furniture", price: 39.99, stockQuantity: 115 });
+const addedProduct2 = await addProduct("./data/inventory.json", { name: "dfdfdfd", category: "Furniture", price: 39.99, stockQuantity: 115 });
+const addedProduct3 = await addProduct("./data/inventory.json", { name: "ererrr", category: "Furniture", price: 39.99, stockQuantity: 115 });
+const addedProduct4 = await addProduct("./data/inventory.json", { name: "vbvbvbb", category: "Furniture", price: 39.99, stockQuantity: 115 });
+console.log(addedProducts);
+await saveInventoryToFile("./data/inventory.json", addedProducts);
+const inventory = await loadInventoryFromFile("./data/inventory.json");
+console.log(inventory);
+
 //await addProduct("./data/inventory.json", { name: "Desk", category: "Electronics", price: 9.99, stockQuantity: 14 });
 //await addProduct("./data/inventory.json", { name: "Radio", category: "Electronics", price: -9.99, stockQuantity: -1 });
 
@@ -27,4 +31,4 @@ console.log(inventory);
 //console.log(order);
 //await createOrder("Radio", -4, "./data/inventory.json");
 
-//await resetInventoryFile("./data/inventory.json", "./data/inventory-backup.json");
+await resetInventoryFile("./data/inventory.json", "./data/inventory-backup.json");
